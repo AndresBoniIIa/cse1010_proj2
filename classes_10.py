@@ -39,7 +39,7 @@ class Budget:
         print()
         print(f"List of {self.expense_type} expenses")
 
-        for type, exp in self.expense_dict.items():
+        for type, exp in self.expenses_dict.items():
             print(f"{type} : ${exp}")
     
     def write_to_file(self):
