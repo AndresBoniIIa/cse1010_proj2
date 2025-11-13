@@ -1,6 +1,6 @@
 import os 
 from Library import functions 
-from Library.classes_9 import Budget
+from Library.classes_10 import Budget
 
 os.system('cls' if os.name == 'nt' else 'clear')
 name = input("Enter your name: ")
