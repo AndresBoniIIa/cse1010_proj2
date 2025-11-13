@@ -1,0 +1,6 @@
+grocery
+milk : $10.0
+
+car
+oil : $32.0
+
