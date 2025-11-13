@@ -46,7 +46,7 @@ class Budget:
         with open("data.txt", "a") as data:
             data.write(self.expense_type)
             data.write("\n")
-            for type, exp in self.expenses_dict.item():
+            for type, exp in self.expenses_dict.items():
                 data.write(f"{type} : ${exp}")
                 data.write("\n")
             data.write("\n")
