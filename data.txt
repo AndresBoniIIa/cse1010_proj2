@@ -1,6 +1,17 @@
-grocery
-milk : $10.0
+BudgetBuddy Report
 
-car
-oil : $32.0
+Income: $10000.0
+Grocery Expenses: $10.0
+Car Expenses: $8.0
+Total Expenses: $18.0
+Balance: $9982.0
 
+Great! You are saving money!
+
+Grocery Expense Breakdown:
+ - Milk: $8.0
+ - orange: $2.0
+
+Car Expense Breakdown:
+ - Oil: $4.0
+ - Wax: $4.0
