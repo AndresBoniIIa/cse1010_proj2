@@ -1,8 +1,8 @@
 import tkinter as tk
 from tkinter import simpledialog, messagebox, filedialog
 
-from Library.classes_10 import Budget
-from Library import functions
+from library.classes_10 import Budget
+from library import functions
 
 
 class BudgetGUI:
