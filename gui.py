@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import simpledialog, messagebox, filedialog
 
+# Make sure your 'classes_10.py' file is in the 'library' folder
 from library.classes_10 import Budget 
 from library import functions
 
@@ -79,17 +80,32 @@ class BudgetGUI:
             if num is None:
                 return
 
+            # --- THIS IS THE UPDATED PART ---
+            # Set the example text based on the category
+            if budget_obj.expense_type == "car":
+                example_text = "Example: repair 200"
+            elif budget_obj.expense_type == "grocery":
+                example_text = "Example: Milk 10"
+            else:
+                example_text = "Example: Item 10" # A good default
+            # --- END OF UPDATE ---
+
             for i in range(num):
                 entry = simpledialog.askstring(
                     "Add Expense",
-                    f"Enter type and cost (Example: Milk 10):"
+                    # Use the new example_text variable
+                    f"Enter type and cost ({example_text}):"
                 )
                 if entry:
                     try:
-                        type_, cost = entry.split()
+                        # This logic allows for multi-word types like "car repair"
+                        parts = entry.split()
+                        cost = float(parts[-1]) # The cost is the last part
+                        type_ = " ".join(parts[:-1]) # The type is everything else
+                        
                         budget_obj.expenses_dict[type_] = float(cost)
                     except:
-                        messagebox.showerror("Error", "Incorrect format. Use: Milk 10")
+                        messagebox.showerror("Error", f"Incorrect format. Use: {example_text}")
         except:
             messagebox.showerror("Error", "Input error.")
 
