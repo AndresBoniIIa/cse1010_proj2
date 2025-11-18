@@ -1,7 +1,7 @@
 import tkinter as tk
+from tkinter import ttk  
 from tkinter import simpledialog, messagebox, filedialog
 
-# Make sure your 'classes_10.py' file is in the 'library' folder
 from library.classes_10 import Budget 
 from library import functions
 
@@ -11,44 +11,48 @@ class BudgetGUI:
         self.root = root
         self.root.title("BudgetBuddy")
         self.root.geometry("400x700")
+        self.root.configure(bg="#f0f0f0") 
+        
+        content_frame = ttk.Frame(root, padding="20 20 20 20")
+        content_frame.pack(fill="both", expand=True)
 
         self.grocery = Budget("grocery")
         self.car = Budget("car")
 
-        # Load any previously saved data on startup
         self.load_data_from_file() 
 
-        # Title
-        tk.Label(root, text="Welcome to BudgetBuddy!", font=("Arial", 14)).pack(pady=10)
 
-        # Name Input
-        tk.Label(root, text="Enter your name:").pack()
-        self.name_entry = tk.Entry(root, width=30)
-        self.name_entry.pack()
+    
+        title_font = ("Helvetica", 18, "bold")
+        ttk.Label(content_frame, text="Welcome to BudgetBuddy!", font=title_font).pack(pady=10)
 
-        # Income Input
-        tk.Label(root, text="Enter monthly income:").pack()
-        self.income_entry = tk.Entry(root, width=30)
-        self.income_entry.pack()
+        ttk.Label(content_frame, text="Enter your name:").pack(pady=(10, 2))
+        self.name_entry = ttk.Entry(content_frame, width=30)
+        self.name_entry.pack(pady=(0, 10), fill='x') 
 
-        # Buttons
-        tk.Button(root, text="Add Grocery Expenses", command=self.add_grocery).pack(pady=10)
-        tk.Button(root, text="Add Car Expenses", command=self.add_car).pack(pady=10)
-        tk.Button(root, text="Calculate Budget", command=self.calculate).pack(pady=15)
+        ttk.Label(content_frame, text="Enter monthly income:").pack(pady=(10, 2))
+        self.income_entry = ttk.Entry(content_frame, width=30)
+        self.income_entry.pack(pady=(0, 10), fill='x')
 
-        # Download Button
-        tk.Button(root, text="Download Data File", command=self.download_data).pack(pady=10)
+        style = ttk.Style()
+        style.configure('TButton', font=('Helvetica', 12))
 
-        # Output Text Box
-        self.output_box = tk.Text(root, height=8, width=45)
-        self.output_box.pack(pady=10)
+        ttk.Button(content_frame, text="Add Grocery Expenses", command=self.add_grocery).pack(pady=10, fill='x')
+        ttk.Button(content_frame, text="Add Car Expenses", command=self.add_car).pack(pady=10, fill='x')
+        
+        style.configure('Accent.TButton', font=('Helvetica', 12, 'bold'))
+        ttk.Button(content_frame, text="Calculate Budget", command=self.calculate, style='Accent.TButton').pack(pady=15, fill='x')
+
+        ttk.Button(content_frame, text="Download Data File", command=self.download_data).pack(pady=10, fill='x')
+
+        
+        self.output_box = tk.Text(content_frame, height=8, width=45, relief="flat", borderwidth=1, highlightbackground="#ccc", highlightthickness=1)
+        self.output_box.pack(pady=10, fill='x')
 
     def load_data_from_file(self):
         try:
-            # We load from "expenses.csv", a file just for data
             with open("expenses.csv", "r") as data_file:
                 for line in data_file:
-                    # 'grocery,Milk,10.0\n' -> ['grocery', 'Milk', '10.0']
                     parts = line.strip().split(',')
                     
                     if len(parts) == 3:
@@ -62,8 +66,6 @@ class BudgetGUI:
                             self.car.expenses_dict[item] = cost
         
         except FileNotFoundError:
-            # This is not an error. It just means it's the first time
-            # you are running the program, so no file exists yet.
             pass 
         except Exception as e:
             messagebox.showerror("Load Error", f"Could not load saved data: {e}")
@@ -80,28 +82,23 @@ class BudgetGUI:
             if num is None:
                 return
 
-            # --- THIS IS THE UPDATED PART ---
-            # Set the example text based on the category
             if budget_obj.expense_type == "car":
                 example_text = "Example: repair 200"
             elif budget_obj.expense_type == "grocery":
                 example_text = "Example: Milk 10"
             else:
-                example_text = "Example: Item 10" # A good default
-            # --- END OF UPDATE ---
+                example_text = "Example: Item 10"
 
             for i in range(num):
                 entry = simpledialog.askstring(
                     "Add Expense",
-                    # Use the new example_text variable
                     f"Enter type and cost ({example_text}):"
                 )
                 if entry:
                     try:
-                        # This logic allows for multi-word types like "car repair"
                         parts = entry.split()
-                        cost = float(parts[-1]) # The cost is the last part
-                        type_ = " ".join(parts[:-1]) # The type is everything else
+                        cost = float(parts[-1]) 
+                        type_ = " ".join(parts[:-1]) 
                         
                         budget_obj.expenses_dict[type_] = float(cost)
                     except:
@@ -115,10 +112,8 @@ class BudgetGUI:
             total_expenses = sum(self.grocery.expenses_dict.values()) + sum(self.car.expenses_dict.values())
             balance = functions.calc_balance(income, total_expenses)
 
-            # Clear output
             self.output_box.delete(1.0, tk.END)
 
-            # Text output stored here for file writing
             text_output = (
                 f"Income: ${income}\n"
                 f"Grocery Expenses: ${sum(self.grocery.expenses_dict.values())}\n"
@@ -129,7 +124,6 @@ class BudgetGUI:
 
             self.output_box.insert(tk.END, text_output)
 
-            # Status label
             if balance > 0:
                 status = "Great! You are saving money!"
             elif balance == 0:
@@ -140,7 +134,6 @@ class BudgetGUI:
             self.output_box.insert(tk.END, status)
 
             # --- WRITE REPORT TO data.txt ---
-            # This file is the "pretty" report for the user
             with open("data.txt", "w") as file:
                 file.write("BudgetBuddy Report\n\n")
                 file.write(text_output)
@@ -154,7 +147,6 @@ class BudgetGUI:
                     file.write(f" - {k}: ${v}\n")
 
             # --- SAVE RAW DATA TO expenses.csv ---
-            # This file is for the program to read next time
             with open("expenses.csv", "w") as data_file:
                 for item, cost in self.grocery.expenses_dict.items():
                     data_file.write(f"grocery,{item},{cost}\n")
@@ -173,7 +165,6 @@ class BudgetGUI:
                 filetypes=[("Text Files", "*.txt"), ("All Files", "*.*")]
             )
             if save_path:
-                # This correctly copies the report file (data.txt)
                 with open("data.txt", "r") as src, open(save_path, "w") as dst:
                     dst.write(src.read())
                 messagebox.showinfo("Success", "File downloaded successfully!")
@@ -181,7 +172,6 @@ class BudgetGUI:
             messagebox.showerror("Error", "Unable to save data file.")
 
 
-# makes GUI visible 
 if __name__ == "__main__":
     root = tk.Tk()
     app = BudgetGUI(root)
