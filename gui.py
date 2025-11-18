@@ -1,7 +1,6 @@
 import tkinter as tk
 from tkinter import simpledialog, messagebox, filedialog
 
-# Make sure your 'classes_10.py' file is in the 'library' folder
 from library.classes_10 import Budget 
 from library import functions
 
