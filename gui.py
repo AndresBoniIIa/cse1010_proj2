@@ -1,7 +1,9 @@
+
 import tkinter as tk
 from tkinter import simpledialog, messagebox, filedialog
 
-from library.classes_10 import Budget
+# Make sure your 'classes_10.py' file is in the 'library' folder
+from library.classes_10 import Budget 
 from library import functions
 
 
@@ -14,9 +16,8 @@ class BudgetGUI:
         self.grocery = Budget("grocery")
         self.car = Budget("car")
 
-        # Reset file
-        with open("data.txt", "w") as file:
-            file.write("BudgetBuddy Data File\n\n")
+        # Load any previously saved data on startup
+        self.load_data_from_file() 
 
         # Title
         tk.Label(root, text="Welcome to BudgetBuddy!", font=("Arial", 14)).pack(pady=10)
@@ -42,6 +43,31 @@ class BudgetGUI:
         # Output Text Box
         self.output_box = tk.Text(root, height=8, width=45)
         self.output_box.pack(pady=10)
+
+    def load_data_from_file(self):
+        try:
+            # We load from "expenses.csv", a file just for data
+            with open("expenses.csv", "r") as data_file:
+                for line in data_file:
+                    # 'grocery,Milk,10.0\n' -> ['grocery', 'Milk', '10.0']
+                    parts = line.strip().split(',')
+                    
+                    if len(parts) == 3:
+                        category = parts[0]
+                        item = parts[1]
+                        cost = float(parts[2])
+                        
+                        if category == "grocery":
+                            self.grocery.expenses_dict[item] = cost
+                        elif category == "car":
+                            self.car.expenses_dict[item] = cost
+        
+        except FileNotFoundError:
+            # This is not an error. It just means it's the first time
+            # you are running the program, so no file exists yet.
+            pass 
+        except Exception as e:
+            messagebox.showerror("Load Error", f"Could not load saved data: {e}")
 
     def add_grocery(self):
         self.add_expenses_gui(self.grocery)
@@ -99,7 +125,8 @@ class BudgetGUI:
 
             self.output_box.insert(tk.END, status)
 
-            # Write to file
+            # --- WRITE REPORT TO data.txt ---
+            # This file is the "pretty" report for the user
             with open("data.txt", "w") as file:
                 file.write("BudgetBuddy Report\n\n")
                 file.write(text_output)
@@ -112,6 +139,15 @@ class BudgetGUI:
                 for k, v in self.car.expenses_dict.items():
                     file.write(f" - {k}: ${v}\n")
 
+            # --- SAVE RAW DATA TO expenses.csv ---
+            # This file is for the program to read next time
+            with open("expenses.csv", "w") as data_file:
+                for item, cost in self.grocery.expenses_dict.items():
+                    data_file.write(f"grocery,{item},{cost}\n")
+                
+                for item, cost in self.car.expenses_dict.items():
+                    data_file.write(f"car,{item},{cost}\n")
+
         except Exception as e:
             messagebox.showerror("Error", f"An error occurred:\n{e}")
 
@@ -123,6 +159,7 @@ class BudgetGUI:
                 filetypes=[("Text Files", "*.txt"), ("All Files", "*.*")]
             )
             if save_path:
+                # This correctly copies the report file (data.txt)
                 with open("data.txt", "r") as src, open(save_path, "w") as dst:
                     dst.write(src.read())
                 messagebox.showinfo("Success", "File downloaded successfully!")
