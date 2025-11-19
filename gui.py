@@ -190,7 +190,7 @@ class BudgetGUI:
         self.output_box.delete(1.0, tk.END)
         self.output_box.insert(tk.END, logic.last_report)
 
-    Import / Export
+    #Import / Export
     def import_export_dialog(self):
         logic.import_export_data(self.root)
         self.update_output()
