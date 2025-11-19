@@ -1,8 +1,5 @@
 {
-    "Car": {
-        "Filter": 6.0
-    },
     "Grocery": {
-        "Bread": 5.0
+        "Bread": 4.0
     }
 }
