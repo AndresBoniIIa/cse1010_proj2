@@ -1,6 +1,6 @@
 from library.classes_10 import Category
-import library.data as data
-import library.functions
+from library import functions
+import data
 
 categories = {}  # global dictionary of Category objects
 last_report = ""
@@ -30,13 +30,13 @@ def calculate_budget(income_str):
         last_report = "Invalid income input. Defaulting to 0.\n"
 
     total_expenses = sum(cat.total_cost() for cat in categories.values())
-    balance = library.functions.calc_balance(income, total_expenses)
+    balance = functions.calc_balance(income, total_expenses)
     last_report += f"Income: ${income:.2f}\n"
     for cname, cat in categories.items():
         last_report += f"{cname} total: ${cat.total_cost():.2f}\n"
     last_report += f"Total Expenses: ${total_expenses:.2f}\n"
     last_report += f"Balance: ${balance:.2f}\n"
-    last_report += library.functions.status(balance) + "\n"
+    last_report += functions.status(balance) + "\n"
     data.save_data(categories)
 
 def import_export_data(root):
