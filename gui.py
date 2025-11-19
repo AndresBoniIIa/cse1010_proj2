@@ -43,7 +43,7 @@ class BudgetGUI:
         self.build_main_tab()
         self.build_chart_tab()
 
-    # ---------------- Build Main Tab ----------------
+    
     def build_main_tab(self):
         ttk.Label(self.main_tab, text="Welcome to BudgetBuddy!", style="Title.TLabel").pack(pady=10)
         ttk.Label(self.main_tab, text="Enter your name:", style="TLabel").pack(pady=(10,2), anchor='w')
@@ -74,14 +74,14 @@ class BudgetGUI:
         )
         self.output_box.pack(pady=10, fill='both', expand=True)
 
-    # ---------------- Build Chart Tab ----------------
+    
     def build_chart_tab(self):
         self.fig, self.ax = plt.subplots(figsize=(5,4), dpi=100)
         self.canvas = FigureCanvasTkAgg(self.fig, master=self.chart_tab)
         self.canvas.get_tk_widget().pack(fill='both', expand=True)
         self.update_chart()
 
-    # ---------------- Add Expense ----------------
+    
     def add_expense_dialog(self):
         while True:
             category = simpledialog.askstring("Category", "Enter new or existing category name:")
@@ -110,7 +110,7 @@ class BudgetGUI:
 
         self.update_chart()
 
-    # ---------------- Manage Expenses ----------------
+    
     def manage_expenses_dialog(self):
         categories = list(logic.categories.keys())
         if not categories:
@@ -180,7 +180,7 @@ class BudgetGUI:
 
         self.update_chart()
 
-    # ---------------- Calculate ----------------
+    
     def calculate(self):
         logic.calculate_budget(self.income_entry.get())
         self.update_output()
@@ -190,13 +190,13 @@ class BudgetGUI:
         self.output_box.delete(1.0, tk.END)
         self.output_box.insert(tk.END, logic.last_report)
 
-    # ---------------- Import / Export ----------------
+    Import / Export
     def import_export_dialog(self):
         logic.import_export_data(self.root)
         self.update_output()
         self.update_chart()
 
-    # ---------------- Update Pie Chart ----------------
+    # Pie Chart 
     def update_chart(self):
         data.create_pie_chart(logic.categories, self.ax)
         self.canvas.draw()
