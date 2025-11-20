@@ -35,6 +35,25 @@ def add_expense(cat_name, exp_name, cost):
     categories[raw] = Category(raw)
     categories[raw].add_expense(exp_name, cost)
 
+def delete_expense(cat_name, expense_name):
+    # Find category name ignoring case
+    target = None
+    for existing in categories:
+        if existing.lower() == cat_name.lower():
+            target = existing
+            break
+
+    if target is None:
+        return  # No such category
+
+    # Delete expense if it exists
+    if expense_name in categories[target].expenses_dict:
+        categories[target].delete_expense(expense_name)
+
+    # If category is now empty, delete it
+    if len(categories[target].expenses_dict) == 0:
+        del categories[target]
+
 def delete_category(cat_name):
     if cat_name in categories:
         del categories[cat_name]
