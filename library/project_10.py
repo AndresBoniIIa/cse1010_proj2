@@ -6,16 +6,34 @@ categories = {}  # global dictionary of Category objects
 last_report = ""
 
 def add_category(name):
-    if name not in categories:
-        categories[name] = Category(name)
+    if not name:
+        return
 
-def add_expense(cat_name, expense_name, cost):
-    add_category(cat_name)
-    categories[cat_name].add_expense(expense_name, cost)
+    raw = name.strip()
 
-def delete_expense(cat_name, expense_name):
-    if cat_name in categories:
-        categories[cat_name].delete_expense(expense_name)
+    # Find if a case-insensitive match already exists
+    for existing in categories:
+        if existing.lower() == raw.lower():
+            return  # category already exists, do nothing
+
+    # Otherwise create a NEW category using the original casing the user typed
+    categories[raw] = Category(raw)
+
+def add_expense(cat_name, exp_name, cost):
+    if not cat_name:
+        return
+
+    raw = cat_name.strip()
+
+    # Find matching category (case-insensitive)
+    for existing in categories:
+        if existing.lower() == raw.lower():
+            categories[existing].add_expense(exp_name, cost)
+            return
+
+    # If no existing category matched, create a new one
+    categories[raw] = Category(raw)
+    categories[raw].add_expense(exp_name, cost)
 
 def delete_category(cat_name):
     if cat_name in categories:
@@ -23,20 +41,25 @@ def delete_category(cat_name):
 
 def calculate_budget(income_str):
     global last_report
+    last_report = ""   # <-- RESET THE REPORT EACH TIME
+
     try:
         income = float(income_str)
     except:
-        income = 0
-        last_report = "Invalid income input. Defaulting to 0.\n"
+        last_report = "**ERROR** Invalid Income Input **ERROR**\n"   # Only error message
+        return  # <-- Stop here so no other output is added
 
     total_expenses = sum(cat.total_cost() for cat in categories.values())
     balance = functions.calc_balance(income, total_expenses)
+
     last_report += f"Income: ${income:.2f}\n"
     for cname, cat in categories.items():
         last_report += f"{cname} total: ${cat.total_cost():.2f}\n"
+
     last_report += f"Total Expenses: ${total_expenses:.2f}\n"
     last_report += f"Balance: ${balance:.2f}\n"
     last_report += functions.status(balance) + "\n"
+
     data.save_data(categories)
 
 def import_export_data(root):
