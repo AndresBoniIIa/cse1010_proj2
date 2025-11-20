@@ -1,1 +1,15 @@
+{
+    "Grocery": {
+        "Bread": 4.0,
+        "Milk": 7.0,
+        "Ham": 5
+    },
 
+    "School": {
+        "Books": 10,
+        "Pencil": 2,
+        "Lunch": 5
+    }
+
+
+}
