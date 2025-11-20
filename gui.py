@@ -106,7 +106,7 @@ class BudgetGUI:
         for i in range(count):
             # Get expense name
             while True:
-                exp_name = simpledialog.askstring("Expense Name", f"Enter name for expense #{i+1}:")
+                exp_name = simpledialog.askstring("Expense Name", f"Enter name for expense #{i+1}: (e.g., oil):")
                 if exp_name is None:
                     # user cancelled -> stop the whole add process
                     return
