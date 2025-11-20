@@ -83,6 +83,7 @@ class BudgetGUI:
 
     
     def add_expense_dialog(self):
+        # Ask for category 
         while True:
             category = simpledialog.askstring("Category", "Enter new or existing category name:")
             if category is None:
@@ -92,22 +93,43 @@ class BudgetGUI:
                 break
             messagebox.showerror("Error", "Category name cannot be empty.")
 
-        while True:
-            entry = simpledialog.askstring("Expense", "Enter expense and cost (Example: Gas 10.5):")
-            if entry is None:
-                return
-            try:
-                parts = entry.split()
-                cost = float(parts[-1])
-                name = " ".join(parts[:-1])
-                if not name:
-                    raise ValueError
-                logic.add_expense(category, name, cost)
-                messagebox.showinfo("Success", f"Added expense '{name}' (${cost:.2f}) to category '{category}'")
-                break
-            except:
-                messagebox.showerror("Error", "Invalid format. Use: Name Cost (e.g., Gas 10.5)")
+        # Ask how many expenses to add to this category
+        count = simpledialog.askinteger(
+            "How many?",
+            f"How many expenses do you want to add to '{category}'?",
+            minvalue=1
+        )
+        if count is None:
+            return
 
+        # Loop to collect each expense's name and cost
+        for i in range(count):
+            # Get expense name
+            while True:
+                exp_name = simpledialog.askstring("Expense Name", f"Enter name for expense #{i+1}:")
+                if exp_name is None:
+                    # user cancelled -> stop the whole add process
+                    return
+                exp_name = exp_name.strip()
+                if exp_name:
+                    break
+                messagebox.showerror("Error", "Expense name cannot be empty.")
+
+            # Get expense cost
+            while True:
+                try:
+                    cost = simpledialog.askfloat("Expense Cost", f"Enter cost for '{exp_name}':")
+                    if cost is None:
+                        # user cancelled -> stop the whole add process
+                        return
+                    # success: add expense
+                    logic.add_expense(category, exp_name, cost)
+                    messagebox.showinfo("Success", f"Added expense '{exp_name}' (${cost:.2f}) to category '{category}'")
+                    break
+                except:
+                    messagebox.showerror("Error", "Invalid number. Enter a valid cost for the expense.")
+
+    # Refresh chart after adding all requested expenses
         self.update_chart()
 
     
