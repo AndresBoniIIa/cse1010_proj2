@@ -118,7 +118,7 @@ class BudgetGUI:
             # Get expense cost
             while True:
                 try:
-                    cost = simpledialog.askfloat("Expense Cost", f"Enter cost for '{exp_name}':")
+                    cost = simpledialog.askfloat("Expense Cost", f"Enter cost for '{exp_name}': (No $ sign)")
                     if cost is None:
                         # user cancelled -> stop the whole add process
                         return
